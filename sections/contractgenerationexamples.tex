@@ -122,7 +122,7 @@ An Invariant can be defined as follows: A quantity which remains unchanged under
 \newline An Invariant is therefore extremely useful when one wants to ensure certain conditions of an object, which must hold at all times. If an invariant is to be applied to an object with multiple attributes, it is usually defined as a postconditions on all attributes. 
 
 \paragraph{Non provable Goals} \label{non provable goal}
-These are situations that are impossible to prove, because some preconditions do not hold or not sufficient information is available. They are very hard to detect and isolate from provable goals, although some work has found solutions under certain restrictions, for instance \cite{goals}. When an unprovable goal is encountered in a context, it is much easier to simply state it as a precondition for the context to be valid, thus burdening the calling context with ensuring that the goal holds. 
+These are situations that are impossible to prove, because some postconditions do not hold or not sufficient information is available. They are very hard to detect and isolate from provable goals, although some work has found solutions under certain restrictions, for instance \cite{goals}. When an unprovable goal is encountered in a context, it is much easier to simply state it as a precondition for the context to be valid, thus burdening the calling context with ensuring that the goal holds. 
 
 \subsubsection{Solving the problems in an abstract way}
 This subsection finally shows how the patterns detailed above can be used to solve the programming examples, thus allowing generic solutions for many similar problems.
