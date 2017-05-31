@@ -1,5 +1,5 @@
 \section{Dafny}
-
+Dafny consists out of 4 different projects. DafnyDriver, DafnyPipleline, DafnyRuntime and the DafnyServer. Most important was the DafnyServer for this project. It had been forked to allow extensions which were forked into the master branch. 
 
 Github Repository: \href{https://github.com/FunctionalCorrectness/dafny-vscode}{https://github.com/FunctionalCorrectness/dafny-vscode}
 
@@ -11,7 +11,7 @@ Github Repository: \href{https://github.com/FunctionalCorrectness/dafny-vscode}{
 \subsection{DafnyServer}
 Github Repository: \href{https://github.com/FunctionalCorrectness/dafny-microsoft}{https://github.com/FunctionalCorrectness/dafny-microsoft}
 
-The DafnyServer is a simple console application which allows proofing Dafny source files. To verify documents, they are sent over the standard input. Results are obtained from the standard output. The verification task needs to be in JSON format \todo{add reference to source.cs} and is sent base64 encoded. By default, the server only supports the verbs verify, quit and selftest. Verbs are sent first, followed by a newline \textbackslash{n}. They may be proceeded by a payload and an end string \textbf{[[DAFNY-CLIENT: EOM]]}. \newline 
+The DafnyServer is a simple console application which allows proofing Dafny source files. To verify documents, they are sent over the standard input. Results are obtained from the standard output. The verification task needs to be in JSON format \todo{add reference to source.cs} and is sent base64 encoded. By default, the server only supports the verbs verify, quit and selftest. Verbs are sent first, followed by a newline \textbackslash{n}. They may be proceeded by a payload and the end string \textbf{[[DAFNY-CLIENT: EOM]]}. \newline 
 Verb explanation: Verify needs a verification task and returns if all proofs holds, quit stops the server and selftest execute some simple verification. \newline
 
 \textbf{Example verification task}
@@ -141,6 +141,6 @@ The command returns the version of the DafnyServer.
 
 
 \subsubsection{counterExample}
-
+To show counter examples in Visual Studio Code, it was necessary to extend the server by an additional feature, which returns an counter example. To verb is called \textbf{counterExample} and uses the same payload as verify. It also needs to verify the program first, but it calculated the counter model if a proof fails. This calculation can be quite complex and therefore need a lot of time to perform.  
 \todo{ADD text}
 

@@ -655,9 +655,6 @@ error: code and message set in case an exception happens during the rename reque
 Registration Options: TextDocumentRegistrationOptions
 \end{lstlisting}
 
-\subsection{Commands}
-Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. Also the server can send commands. 
-
 \subsection{Communication overview}\label{custom commands}
 To get an overview over how the client and the server communicate, all the different notifications, requests and commands are explained. 
 
@@ -717,6 +714,11 @@ Sends a request containing only the Uri to the corresponding file. Starts the Da
 \textbf{stop}
 Stops the server and returns after the process has been terminated. This is used for the installation to be sure that the process is not being run. \newline
 
+
+\subsection{Commands}
+Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. Also the server can send commands. This was needed for example, to show references, because there was a transform necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. I
+
+
 \subsubsection{Commands Client}
 
 \textbf{dafny.restartDafnyServer}
@@ -745,6 +747,22 @@ Compile the current document \newline
 Shortcut: F5
 \newline
 Compile the current document, and if there is a "Main Method", start the corresponding executable. \newline
+
+\textbf{dafny.showCounterExample}
+Shortcut: F7
+\newline
+Calculates the counter example for the current file. \newline
+
+
+\textbf{dafny.hideCounterExample}
+Shortcut: F8
+\newline
+Hide the counter example in the current file.  \newline
+
+\textbf{dafny.showDotGraph}
+Shortcut: F6
+\newline
+Generates a flow graph out of the current file. Displays all the graphs in a second view. \newline
 
 
 \subsection{Process overview}
