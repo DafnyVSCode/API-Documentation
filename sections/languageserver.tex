@@ -1,4 +1,4 @@
-\subsection{Language Server}\label{langServer}
+\section{Language Server Protocol}
 
 Visual Studio Code plugins can be implemented in two ways: the first one is via the standard Visual Studio Code API and the second one is in form of a language server. Language servers follow a standard protocol to provide services for working with different programming languages and offer often used features such as go to definition. While this offers great portability and easy integration with other IDEs or tools that work with language servers, the implementation as a language server was at first rejected in this project. \newline
 The main reason was that the project extends an existing plugin, which was already built around the standard Visual Studio Code API. A second consideration was that the usage of language servers in Visual Studio Code plugins is very sparse at the moment. The big language integrations like typescript or javascript do not implement their plugins as language servers, while the GoLang plugin offers experimental support at this time. The not wide spread usage in this environment was therefore another reason to not implement a language server initially. \newline
@@ -8,7 +8,7 @@ Since the plugin now is programmed in form of a language server, it can potentia
 
 Below a short overview of the protocol and how it was implemented is given. Server here refers to the language server and not the DafnyServer. The later one is explicitly written as DafnyServer.
 
-\subsubsection{The protocol}
+\subsection{The protocol}
 The Language Server protocol is used between a tool (the client) and a language smartness provider (the server) to integrate features like auto complete, goto definition, find all references and alike into the tool. \cite{langserver} \newline
 
 The language server maintains semantic information about a program implemented in a particular language. The language server is notified whenever the user opens a document in the tool. Also edits by the user are reported, so the language server is notified of the changes and can update the program's semantic information. Currently, only point to point communication is supported by the protocol. Sharing one language server between multiple tools would require further protocol mechanisms like locking a file.\newline
@@ -26,7 +26,7 @@ The server also gets notified when the user closes a file. An important distinct
 The communication between the tool and the language server uses JSON RPC v2.0. Language server can implement an arbitrary subset of features defined in the protocol, so in the first response by the server it details what capabilities it has. \newline
 
 
-\subsubsection{Communication Types}
+\subsection{Communication Types}
 There are two different types to communicate between the client and the server. It's either a notification or a request. 
 
 \paragraph{Notification}
@@ -35,7 +35,7 @@ A notification is just a message which can be sent in both directions. But one c
 \paragraph{Request}
 A request on the other side is a message which will be answered.  
 
-\subsubsection{Standard Implementation}
+\subsection{Standard Implementation}
 Next to custom commands, which are explained in chapter \ref{custom commands} and following, the language server describes a standardized API\cite{protMaster} for features that are useful when working with a language server. The API is designed as a Request / Reply Protocol. Below a list of the implemented Requests is listed, while a detailed description on how the implementation was done can be found in \ref{architecture}. All the structures detailed in this chapter are defined by the protocol. \newline
 
 \paragraph{Message Structure}
@@ -655,10 +655,10 @@ error: code and message set in case an exception happens during the rename reque
 Registration Options: TextDocumentRegistrationOptions
 \end{lstlisting}
 
-\subsubsection{Commands}
+\subsection{Commands}
 Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. Also the server can send commands. 
 
-\subsubsection{Communication overview}\label{custom commands}
+\subsection{Communication overview}\label{custom commands}
 To get an overview over how the client and the server communicate, all the different notifications, requests and commands are explained. 
 
 
@@ -747,6 +747,7 @@ Shortcut: F5
 Compile the current document, and if there is a "Main Method", start the corresponding executable. \newline
 
 
+\subsection{Process overview}
 \subsubsection{Startup process}
 \begin{figure}[H]
 	\centering
