@@ -1,53 +1,79 @@
-\subsection{Setup}\label{setup}
-This chapter explains features, which were not implemented as the project was started. This features are mainly to grow the community, as offering features to make starting coding with Dafny easier and support a wide range of IDEs. The goal of the explain why they were chosen and implemented. 
+\section{System Setup}
+This chapter details the infrastructure that was used in this project. It includes the local setup on the developer machines as well as all remote infrastructure such as continuous integration and project management tools. 
+\subsection{Local setup}
+TexStudio 2.12\newline
+Visual Studio Code 1.9\newline
+Git 
 
-\subsubsection{Language Server} \label{setupLanguageServer}
 
-\paragraph{What is a Language Server}
-A language server allows to integrate features like AutoCompletion, go to definition, find all references in an easy way into IDEs. Such a server mostly coexists with a client, which is a normally a native IDE plugin, which does the customization of the GUI, register shortcuts or adds menu items. The language server provides a list of supported actions, which are normally shown in the IDE. This makes it very handy to extend it as well. 
-The protocol between these two components is standardized by Microsoft, with the idea behind, make it IDE independent. 
- \newline
+\subsection{Server setup}
+Jira \newline
+Bamboo\newline
+NodeJS\newline
+SonarQube\newline
+Postgres
+
+\subsubsection{Project homepage}
+In order to alway be fully aware about all aspects of the project, it was decided to setup a small project homepage that gathers all relevant information and displays it at a single point. This was done to support the authors with their work, but also to provide a real-time insight to the advisors of this project. \newline
+The first abstract of the page collects all links that are relevant to the project. This includes all code repositories, but also links to all project management tools used as well as to the documentation of this project.  \newline
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1.0\textwidth]{img/languageServer}
-	\caption{Language Server}
-	\label{fig:languageServer}
+	\includegraphics[width=1\textwidth]{img/homeLinks}
+	\caption{All links relevant to the project}
+	\label{fig:Project Links}
 \end{figure}
 
+Since continuous integration was ingrained to this project from the start, the last stable version of the plugin was continuously available in the marketplace of Visual Studio Code. To keep track of how many people are already using the plugin, a counter displaying the downloads was added to the home page. \newline
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/homeCounter}
+	\caption{Downloads of the plugin}
+	\label{fig:Plugin Downloads}
+\end{figure}
 
-\paragraph{Why were they chosen to implement}
-Since Dafny is already supported on different operation systems, it was decided to make the plugin as platform and IDE independent as possible. Because Visual Studio Code supports the Language Server Protocol and is the reference implementation, the existing plugin was refactored to work as a language server. The strictly split of the plugin into a client and a server had also the benefit, that the architecture had to be changed, which resulted in a much better and clearer structure. \newline
+As already mentioned, it was paramount to this project to implement continuous integration, not only with the plugin, but for all other artifacts as well (the home page itself, or the documentation). In order to achieve this, various test- and build jobs were defined with Bamboo. To quickly see if anything is amiss, the home page also displays the status of these tasks. \newline
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/homeBuilds}
+	\caption{Status of all automated tasks}
+	\label{fig:Bamboo Tasks}
+\end{figure}
 
-In the future another IDE could just integrate the existing language server, make smaller tweaks to the client and it would work. No rewritting of the whole logic, just use the server and most features will just work, thanks to the standardized protocol. 
+To keep code quality at a high level, SonarQube was used to analyze every commit to the code base of the plugin. The findings of SonarQube were also integrated into the home page. \newline
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/homeSonar}
+	\caption{Metrics analyzed by SonarQube}
+	\label{fig:SonarQube}
+\end{figure}
 
-\paragraph{What benefits do they entail}
-Developing the plugin as a language server has the big benefit, that it could be easily integrated into existing IDEs, which supports Language Server Protocol, without reprogramming everything. Supporting AutoCompletion, go to definition, find all references, would just work, without writing a single line of code. The only step is to start the Language Server and connect to it. Only the client is needed to be adjusted, depending on the requirements how the GUI should look like and mostly the programming language to developing the client will change. 
-See \ref{ides} for a overview of IDEs which were looked at and tried to be supported. 
+To support an iterative approach towards implementation, Scrum was chosen with weekly sprints. Tickets could either be new, worked upon or finished. To quickly grasp the work currently being done and how much time is planned for them, a dashboard displaying information from Jira, the project management tool used by this project, is also integrated into the home page.\newline
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/homeScrum}
+	\caption{Project Dashboard from Jira}
+	\label{fig:Jira}
+\end{figure}
 
+Lastly, it was important to stay on track during the project regarding time management. To have a simple overview on the time invested, an additional import from Jira was done, which is implemented as graph detailing the cumulative amount of hours worked on the project. \newline
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/homeTime}
+	\caption{Hours worked on the project}
+	\label{fig:Jira Hours}
+\end{figure}
 
-\subsubsection{Automatic Installation} \label{setupAutomaticInstallation}
-
-\paragraph{What is Automatic Installation}
-Automatic Installation is the process to setup the whole Dafny environment in the background. Downloading the latest release from GitHub, extract it and setting all necessary configuration properties correctly. This process is platform dependent, because there is a zip for each operating system. 
-
-
-\paragraph{Why was this chosen to implement}
-The setup to start coding with Dafny was quite complicated. The whole installation was not straightforward. First download the Dafny.zip from GitHub, which is hidden under releases. Second extract it to a directory. Afterwards install the Dafny Pluin for Visual Studio Code, set the path to the DafnyServer.exe. You never knew exactly if it was the path with or without DafnyServer.exe. Finally after a restart of Visual Studio Code it maybe worked. \newline
-Because this is quite complicated, especially if you want the grow the community, this process must be much easier. For this reason it was decided to implement this important feature. The goal was that a new user can start coding in under 1 minute. 
-
-\paragraph{What benefits do this entail}
-More people can start writting Dafny programs, not worrying setting up Dafny, struggling in configurations or do not find the release on GitHub. Also professors can integrate Dafny into their lectures, as long as students can install Dafny without problems. 
-
-
-\subsubsection{Automatic Upgrade} \label{setupAutomaticUpgrade}
-
-\paragraph{What is Automatic Upgrade}
-Automatic Upgrade makes sure, that always the latest version of Dafny is used. If a new release is published on GitHub this feature will check that, and notify the user, that there is newer release available. If the user wants to upgrade the Dafny environment, the feature \ref{setupAutomaticInstallation} will take over. 
-
-\paragraph{Why was this chosen to implement}
-Most people will never look at GitHub to check if there is a newer version of Dafny available. Especially if there is no need to, because everything can be installed automatically. Out of this reason, there need a version check, which informs the user if there is a newer version. 
+Together, all these abstracts give a detailed overview of the project, allowing for a quick grasp of the work being done, its quality and how the project is coming along over time. It was often the first point of action to open the page when working on the project. 
 
 
-\paragraph{What benefits do this entail}
-Newer versions bring important bug fixes and new features, which would not be used if there is no version check. Users can install newer version the same easy way, as installing the environment the first time.  
+\subsection{Continuous Integration}
 
+To ensure that the code quality is high and the code is working as expected, all commits trigger automated builds of the respective project. A commit to the documentation repository executes a job which creates a file out of the \LaTeX sources. This document is then copied to the \emph{wwwroot} directory, which then can be downloaded from the project homepage. Commits to the vscode-dafny repository will result in a build and a complete run of all tests on the three environments afterwards. Therefore remote agents are installed on Ubuntu and OSX , which test the plugin on these operation system.  Additionally SonarQube is used to find bugs and bad practices as early as possible. The last repository which triggers a bamboo job is the project homepage. The latest version is built and deployed when a commit is performed. 
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{img/ci}
+	\caption{Server Setup}
+	\label{fig:Server setup}
+\end{figure}
