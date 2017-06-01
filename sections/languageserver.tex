@@ -656,8 +656,8 @@ Registration Options: TextDocumentRegistrationOptions
 \end{lstlisting}
 
 \subsection{Communication overview}\label{custom commands}
-To get an overview over how the client and the server communicate, all the different notifications, requests and commands are explained. 
-
+All the following notifications and requests are not standadized. They were needed to have additional features like installing Dafny, restarting the DafnyServer or updating the queue size. 
+Therefore to support a new IDE all the \textbf{Server $\longrightarrow$ Client} have to be implemented, in the new client.
 
 \subsubsection{Notification Server $\longrightarrow$ Client}
 
@@ -669,6 +669,9 @@ This message is sent if the mono path is specified but mono is in the path. \new
 
 \textbf{INFO}
 Info messages appear quite often to inform the user about the current progress. \newline
+
+\textbf{dafnymissing}
+This informs the client that the verification of the DafnyServer has failed or that there is a newer version available. The text is sent as a additional parameter.  \newline
 
 \textbf{queueSize}
 This message updates the queue size number in the status bar on the right side. \newline
@@ -688,10 +691,12 @@ All states from the server are also sent to the client to update the status bar.
 \textbf{ready}
 This message is sent directly after the serverStarted message to inform the DafnyClientProvider that verification requests can now be sent. \newline
 
-\subsubsection{Request Server $\longrightarrow$ Client}
+\textbf{progress}
+Used for inform user about progress during downloading and extracting of Dafny. This notification has also the following data attached: domain, current, total\newline
 
-\textbf{dafnymissing}
-This informs the client that the verification of the DafnyServer has failed or that there is a newer version available. The text is sent as a additional parameter.  \newline
+\subsubsection{Request Server $\longrightarrow$ Client}
+There are no requests which are sent from the server. 
+
 
 \subsubsection{Diagnostics Server $\longrightarrow$ Client}
 
@@ -703,6 +708,10 @@ After a file has been verified, the output is analyzed and errors are sent as di
 \textbf{verify}
 This notification contains the document which has to be verified. On the server it is put into a queue and the result is sent via verificationResult. \newline
 
+\textbf{counterExample}
+This message is sent directly after the serverStarted message to inform the DafnyClientProvider that verification requests can now be sent. \newline
+
+
 \subsubsection{Request Client $\longrightarrow$ Server}
 
 \textbf{reset}
@@ -711,13 +720,24 @@ Resets the DafnyServer on the Server and restarts it. This can be useful if the 
 \textbf{compile}
 Sends a request containing only the Uri to the corresponding file. Starts the Dafny.exe with parameters to generate either a dll or an exe. After the compilation, it returns possible errors, if it is executable and a message.\newline
 
-\textbf{stop}
-Stops the server and returns after the process has been terminated. This is used for the installation to be sure that the process is not being run. \newline
+\textbf{install}
+Executes first an uninstallation if Dafny is installed. Afterwards downloads Dafny, extracts it. Additionally the install folder is sent in the response to update the configuration. \newline
 
+\textbf{uninstall}
+First stops the running instance and then removes the current Dafny installation. \newline
+
+\textbf{dotgraph}
+Generates a flowgraph for the file sent. Returns as the generation has been completed. \newline
 
 \subsection{Commands}
-Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. Also the server can send commands. This was needed for example, to show references, because there was a transform necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. I
+Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. The server can also send commands. This was needed for example, to show references, because there was a transform necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. 
 
+\subsubsection{Commands Server}
+\textbf{dafny.showReferences}
+Used by CodeLens to show references of methods. The method transforms the arguments and forward them to the \textbf{editor.action.showReferences} command. 
+
+\textbf{dafny.editText}
+Used by rename to do text modifications. Should process all text edits which are sent. 
 
 \subsubsection{Commands Client}
 
@@ -725,6 +745,7 @@ Commands are specified in the client and can trigger different actions. One can 
 Restarts the DafnyServer with the "Reset Request".\newline
 
 \textbf{dafny.installDafny}
+This command is used to trigger the install request, either by a context menu or a shortcut. 
 First run the uninstallDafny command to be sure that there is no running instance. Afterwards downloads the latest version from GitHub. This process is either executed from an upgrade message, not installed message or can be executed manually. 
 See \nameref{fig:Version upgrade available} for a better overview over the installation process. \newline
 
