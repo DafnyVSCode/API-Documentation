@@ -23,16 +23,12 @@ As discussed in the last chapter, not everything can be easily tested, so the te
 	Communication DafnyServer and Dafny plugin & Manual + Automatic & Test if output from DafnyServer is correctly parsed and displayed\\
 	Restart DafnyServer task & Manual & Check if a new PID is used and the other is stopped\\
 	Local queue & Manual & DafnyServer can be paused in Visual Studio Code and queuing can be checked \\
-	Syntax highlighting & Manual & Look on our examples \\
+	Syntax highlighting & Manual & Look on example code \\
 	Verification on typing & Manual & Easy to test manually\\
 	Snippets & Manual & Check if snippets are working\\
-	Document symbol provider & Automatic & Can easily be tested with the Visual Studio Code API \\
-	Hover Provider & Automatic & Can easily be tested with the Visual Studio Code API\\
-	Definition Provider & Automatic & Can easily be tested with the Visual Studio Code API  \\
-	Code Lens & Automatic & Can easily be tested with the Visual Studio Code API\\
-	Automatic generation of contracts & Manual & \todo{add desc} \\
-	Autocompletion for identifiers & Automatic & \todo{add desc} \\
-	Reporting of Dafny best practices violations & Manual & \todo{add desc} \\
+	File verification & Automatic & As a .dfy is opened the DafnyServer is started and the file verified \\
+	Counter Model & Automatic & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
+
 \end{longtable}
 
 
@@ -53,11 +49,12 @@ The following paragraphs explain how a certain feature can be tested manually, w
 \paragraph{Manual installation}
 \textbf{\newline Steps:}
 \begin{enumerate}
-	\item Uninstall the plugin and remove Dafny (/home/.Dafny or \%AppData\%/Roaming/Dafny)
+	\item Uninstall the plugin and remove Dafny (/home/.dafny or C:/Users/\%Username\%/.dafny)
 	\item Remove the entry "dafny.basePath" from the user configuration file 
 	\item Restart Visual Studio Code - There should be an error that Dafny is not installed
 	\item Install Dafny from \href{https://github.com/FunctionalCorrectness/dafny-microsoft/releases}{https://github.com/FunctionalCorrectness/dafny-microsoft/releases}
 	\item Set "dafny.basePath" to the extracted archive location
+	\item Restart Visual Studio Code
 	\item Open the file simpleTest.dfy
 	\item Execute "Dafny: RestartServer" task
 \end{enumerate}
