@@ -17,10 +17,10 @@ Verb explanation: Verify needs a verification task and returns if all proofs hol
 \textbf{Example verification task}
 \begin{lstlisting}[language=json,firstnumber=1]
 {
-args:[],
-filename:"c:\Users\Markus\Desktop\dafny\test1.dfy",
-source:"method Main() {	assert 1 < 3; }",
-sourceIsFile:false
+	args : [],
+	filename : "c:\Users\Markus\Desktop\dafny\test1.dfy",
+	source : "method Main() {  assert 1 < 3; }",
+	sourceIsFile : false
 }
 
 \end{lstlisting}
@@ -32,107 +32,110 @@ To support refactoring in the Dafny Visual Studio Code plugin, symbol informatio
 
 \begin{lstlisting}[language=dafny]
 class BankAccountUnsafe {
-var balance: int;
-constructor() modifies this { 
-balance := 10;
-}
+  var balance: int;
+  constructor() modifies this { 
+    balance := 10;
+  }
 
-method withdraw(amount: int) 
-modifies this
-requires amount >= 0
-{   
-balance := balance - amount; 
-} 
+  method withdraw(amount: int) 
+    modifies this
+  requires amount >= 0 {   
+    balance := balance - amount; 
+  } 
 }   
 
 method test() { 
-var a := new BankAccountUnsafe(); 
-a.withdraw(9);  
+  var a := new BankAccountUnsafe(); 
+  a.withdraw(9);  
 }   
 \end{lstlisting}
 
 \textbf{Result: }
 \begin{lstlisting}[language=json,firstnumber=1]
-[ 
-....
-{
-"Call" : null,
-"Column" : 3,
-"EndColumn" : null,
-"EndLine" : null,
-"EndPosition" : null,
-"Ensures" : [],
-"Line" : 3,
-"Module" : "_module",
-"Name" : "_ctor",
-"ParentClass" : "BankAccountUnsafe",
-"Position" : 49,
-"References" : [{
-"Column" : 12,
-"Line" : 15,
-"MethodName" : "test",
-"Position" : 265,
-"ReferencedName" : "_ctor"
-}],
-"Requires" : [],
-"SymbolType" : "Method"
-}, {
-"Call" : null,
-"Column" : 9,
-"EndColumn" : null,
-"EndLine" : null,
-"EndPosition" : null,
-"Ensures" : [],
-"Line" : 6,
-"Module" : "_module",
-"Name" : "withdraw",
-"ParentClass" : "BankAccountUnsafe",
-"Position" : 114,
-"References" : [{
-"Column" : 5,
-"Line" : 16,
-"MethodName" : "test",
-"Position" : 296,
-"ReferencedName" : "withdraw"
-}],
-"Requires" : ["amount >= 0"],
-"SymbolType" : "Method"
-}, {
-"Call" : null,
-"Column" : 6,
-"EndColumn" : null,
-"EndLine" : null,
-"EndPosition" : null,
-"Ensures" : null,
-"Line" : 2,
-"Module" : "_module",
-"Name" : "balance",
-"ParentClass" : "BankAccountUnsafe",
-"Position" : 32,
-"References" : [{
-"Column" : 5,
-"Line" : 4,
-"MethodName" : "balance",
-"Position" : 85,
-"ReferencedName" : "balance"
-}, {
-"Column" : 3,
-"Line" : 10,
-"MethodName" : "balance",
-"Position" : 190,
-"ReferencedName" : "balance"
-}, {
-"Column" : 14,
-"Line" : 10,
-"MethodName" : "balance",
-"Position" : 201,
-"ReferencedName" : "balance"
-}],
-"Requires" : null,
-"SymbolType" : "Field"
-}
-.... 
+[
+  ....
+  {
+    "Call" : null,
+    "Column" : 3,
+    "EndColumn" : null,
+    "EndLine" : null,
+    "EndPosition" : null,
+    "Ensures" : [],
+    "Line" : 3,
+    "Module" : "_module",
+    "Name" : "_ctor",
+    "ParentClass" : "BankAccountUnsafe",
+    "Position" : 49,
+    "References" : [{
+        "Column" : 12,
+        "Line" : 15,
+        "MethodName" : "test",
+        "Position" : 265,
+        "ReferencedName" : "_ctor"
+      }
+    ],
+    "Requires" : [],
+    "SymbolType" : "Method"
+  }, {
+    "Call" : null,
+    "Column" : 9,
+    "EndColumn" : null,
+    "EndLine" : null,
+    "EndPosition" : null,
+    "Ensures" : [],
+    "Line" : 6,
+    "Module" : "_module",
+    "Name" : "withdraw",
+    "ParentClass" : "BankAccountUnsafe",
+    "Position" : 114,
+    "References" : [{
+        "Column" : 5,
+        "Line" : 16,
+        "MethodName" : "test",
+        "Position" : 296,
+        "ReferencedName" : "withdraw"
+      }
+    ],
+    "Requires" : ["amount >= 0"],
+    "SymbolType" : "Method"
+  }, {
+    "Call" : null,
+    "Column" : 6,
+    "EndColumn" : null,
+    "EndLine" : null,
+    "EndPosition" : null,
+    "Ensures" : null,
+    "Line" : 2,
+    "Module" : "_module",
+    "Name" : "balance",
+    "ParentClass" : "BankAccountUnsafe",
+    "Position" : 32,
+    "References" : [{
+        "Column" : 5,
+        "Line" : 4,
+        "MethodName" : "balance",
+        "Position" : 85,
+        "ReferencedName" : "balance"
+      }, {
+        "Column" : 3,
+        "Line" : 10,
+        "MethodName" : "balance",
+        "Position" : 190,
+        "ReferencedName" : "balance"
+      }, {
+        "Column" : 14,
+        "Line" : 10,
+        "MethodName" : "balance",
+        "Position" : 201,
+        "ReferencedName" : "balance"
+      }
+    ],
+    "Requires" : null,
+    "SymbolType" : "Field"
+  }
+  ....
 ]
+
 \end{lstlisting}
 
 
@@ -141,6 +144,74 @@ The command returns the version of the DafnyServer.
 
 
 \subsubsection{counterExample}
-To show counter examples in Visual Studio Code, it was necessary to extend the server by an additional feature, which returns an counter example. To verb is called \textbf{counterExample} and uses the same payload as verify. It also needs to verify the program first, but it calculated the counter model if a proof fails. This calculation can be quite complex and therefore need a lot of time to perform.  
-\todo{ADD text}
+To show counter examples in Visual Studio Code, it was necessary to extend the server by an additional feature, which returns an counter example. To verb is called \textbf{counterExample} and uses the same payload as verify. It also needs to verify the program first, but calculats the counter model if a proof fails. This calculation can be quite complex and therefore need a lot of time to perform.  
 
+\textbf{Request}
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+  args : [],
+  filename : "c:\Users\Markus\Desktop\dafny\abs.dfy",
+  source : "method Abs(x: int) returns (y: int) ensures y >= 0 { return x;}",
+  sourceIsFile : false
+}
+
+\end{lstlisting}
+
+\textbf{Response}
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+  "States" : [{
+      "Column" : 0,
+      "Line" : 0,
+      "Name" : "<initial>",
+      "Variables" : [{
+          "CanonicalName" : "((- 1))",
+          "Name" : "x",
+          "RealName" : null,
+          "Value" : "((- 1))"
+        }, {
+          "CanonicalName" : "(**y#0)",
+          "Name" : "y",
+          "RealName" : null,
+          "Value" : "(**y#0)"
+        }
+      ]
+    }, {
+      "Column" : 16,
+      "Line" : 3,
+      "Name" : "c:\\DEV\\Dafny\\abs.dfy(3,16): initial state",
+      "Variables" : [{
+          "CanonicalName" : "((- 1))",
+          "Name" : "x",
+          "RealName" : null,
+          "Value" : "((- 1))"
+        }, {
+          "CanonicalName" : "(**y#0)",
+          "Name" : "y",
+          "RealName" : null,
+          "Value" : "(**y#0)"
+        }
+      ]
+    }, {
+      "Column" : 13,
+      "Line" : 4,
+      "Name" : "c:\\DEV\\Dafny\\abs.dfy(4,13)",
+      "Variables" : [{
+          "CanonicalName" : "((- 1))",
+          "Name" : "x",
+          "RealName" : null,
+          "Value" : "((- 1))"
+        }, {
+          "CanonicalName" : "((- 1))'1",
+          "Name" : "y",
+          "RealName" : null,
+          "Value" : "((- 1))'1"
+        }
+      ]
+    }
+  ]
+}
+
+
+
+\end{lstlisting}
