@@ -1,28 +1,24 @@
 \section{Dafny}
 Dafny consists out of 4 different projects. DafnyDriver, DafnyPipleline, DafnyRuntime and the DafnyServer. Most important was the DafnyServer for this project. It had been forked to allow extensions which were merged back into the master branch of Microsoft. 
-
 \subsection{Overview}
 Dafny itself does not verify programs, but does the translation into boogie code. Boogie does mostly the same, it can translate the code to different prove engines. Additionally it can be configured to do the verification slightly different. One of the prove engines, which was used for this project is Z3. This engine can verify if a logical formula can be proven. If a prove is found, it can also be viewed, which was important to produce counter examples, were the prove was negated. 
-Additionally the DafnyServer is part of Dafny and allows caching and the opportunity to not start a new process for each verification. 
-
+Additionally the DafnyServer is part of Dafny and allows caching and the opportunity to not start a new process for each verification.\newline 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/dafny_overview}
 	\caption{Interaction between Dafny, Boogie and Z3}
 	\label{fig:dafny_overview}
 \end{figure}
-
-
 \subsection{DafnyServer API}
 The DafnyServer is a simple console application which allows proofing Dafny source files. To verify documents, they are sent over the standard input. Results are obtained from the standard output. The verification task needs to be in JSON format, see \ref{verificationtaskinterface}, and is sent base64 encoded. By default, the server only supports the verbs verify, quit and selftest. Verbs are sent first, followed by a newline \textbackslash{n}. They may be proceeded by a verification task and the end string \textbf{[[DAFNY-CLIENT: EOM]]}. 
 \paragraph{Verb explanation:}
-\textbf{verify} needs a verification task and returns the output from the verification\newline
-\textbf{quit} stops the server \newline
-\textbf{selftest} execute some simple verification. \newline
-
+\begin{itemize}
+	\item \textbf{verify} needs a verification task and returns the output from the verification
+	\item \textbf{quit} stops the server
+	\item \textbf{selftest} execute some simple verification.
+\end{itemize}
 \subsubsection{Verification Task Interface}\label{verificationtaskinterface}
 The verification task must use the following structure. \newline
-
 \begin{lstlisting}[language=json,firstnumber=1]
 {
   args : [],
@@ -30,9 +26,7 @@ The verification task must use the following structure. \newline
   source : "method Main() {  assert 4 < 3; }",
   sourceIsFile : false
 }
-
 \end{lstlisting}
-
 \subsubsection{DafnyServer Example}
 \textbf{Sample Request}
 The base64 encoded string is the verification task from above. 
@@ -43,9 +37,6 @@ eyJhcmdzIjpbXSwiZmlsZW5hbWUiOiJjOlxcREVWXFxEYWZueVxcdGVzdC5kZnkiLCJzb3VyY2Ui
 OiJtZXRob2QgTWFpbigpIHsgIGFzc2VydCAxIDwgMzsgfSIsInNvdXJjZUlzRmlsZSI6ZmFsc2V9
 [[DAFNY-CLIENT: EOM]]
 \end{lstlisting}
-
-
-
 \textbf{Sample Response}
 \begin{lstlisting}[language={},backgroundcolor=\color{background},basicstyle=\scriptsize\ttfamily]
 Verifying Impl$$_module.__default.Main ...
@@ -57,15 +48,11 @@ Execution trace:
 Verification completed successfully!
 [SUCCESS] [[DAFNY-SERVER: EOM]]
 \end{lstlisting}
-
-The result is plaintext. There is currently no possibility to get a JSON response. Because of that it is needed to parsed and extract the most important parts manually. 
-
-
+The result is plain text There is currently no possibility to get a JSON response. Because of that it is needed to parsed and extract the most important parts manually. 
 \subsubsection{symbols}
-To support refactoring in the Dafny Visual Studio Code plugin, symbol information were needed. All fields, methods and classes inside a file along with their information about position, reference and usage have to be accessible. To support this, the DafnyServer was extended. A new verb "symbols" was introduced. This collects various information about the symbol table of the input file and returns it as JSON. 
+To support refactoring in the Dafny Visual Studio Code plugin, symbol information was needed. All fields, methods and classes inside a file along with their information about position, reference and usage have to be accessible. To support this, the DafnyServer was extended. A new verb "symbols" was introduced. This collects various information about the symbol table of the input file and returns it as JSON. 
 \newline\newline
 \textbf{Request}
-
 \begin{lstlisting}[language=dafny]
 class BankAccountUnsafe {
   var balance: int;
@@ -85,7 +72,6 @@ method test() {
   a.withdraw(9);  
 }   
 \end{lstlisting}
-
 \textbf{Response}
 \begin{lstlisting}[language=json,firstnumber=1]
 [
@@ -173,20 +159,15 @@ method test() {
 ]
 
 \end{lstlisting}
-
-
 \subsubsection{counterExample}
-To show counter examples in Visual Studio Code, it was necessary to extend the server by an additional feature, which returns a counter example. To verb is called \textbf{counterExample} and uses the same payload as verify. It also needs to verify the program first, but calculats the counter model if a proof fails. This calculation can be quite complex and therefore need a lot of time to perform.  
-
+To show counter examples in Visual Studio Code, it was necessary to extend the server by an additional feature, which returns a counter example. To verb is called \textbf{counterExample} and uses the same payload as verify. It also needs to verify the program first, but calculates the counter model if a proof fails. This calculation can be quite complex and therefore needs a lot of time to perform.  
 \textbf{Request}
 \begin{lstlisting}[language=dafny]
 method Abs(x: int) returns (y: int)
 ensures y >= 0 {
   return x;
 }
-
 \end{lstlisting}
-
 \textbf{Response}
 \begin{lstlisting}[language=json,firstnumber=1]
 {
@@ -243,18 +224,13 @@ ensures y >= 0 {
 }
 
 \end{lstlisting}
-
-
-
 \subsubsection{version}
 The command returns the version of the Dafny. 
-
 \textbf{Request}
 \begin{lstlisting}[language={},backgroundcolor=\color{background},basicstyle=\scriptsize\ttfamily]
 version
 [[DAFNY-CLIENT: EOM]]
 \end{lstlisting}
-
 \textbf{Response}
 \begin{lstlisting}[language={},backgroundcolor=\color{background},basicstyle=\scriptsize\ttfamily]
 VERSION:1.9.16
