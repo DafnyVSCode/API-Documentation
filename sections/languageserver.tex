@@ -655,9 +655,11 @@ error: code and message set in case an exception happens during the rename reque
 Registration Options: TextDocumentRegistrationOptions
 \end{lstlisting}
 
-\subsection{Communication overview}\label{custom commands}
-All the following notifications and requests are not standadized. They were needed to have additional features like installing Dafny, restarting the DafnyServer or updating the queue size. 
-Therefore to support a new IDE all the \textbf{Server $\longrightarrow$ Client} have to be implemented, in the new client.
+
+\subsection{Custom Extensions}\label{custom commands}
+The following chapters will explain in detail, which additions were made, comparing to the standard messages of the language server protocol. This additions were implemented either with requests or notifications. The standard allows to send these type of messages, with a name and a payload.
+They were needed to have features like installing Dafny, restarting the DafnyServer or updating the queue size. All features which are not normal IDE features. 
+Therefore to support a new IDE all the \textbf{Server $\longrightarrow$ Client} have to be implemented and handled, in the new client.
 
 \subsubsection{Notification Server $\longrightarrow$ Client}
 
@@ -695,13 +697,7 @@ This message is sent directly after the serverStarted message to inform the Dafn
 Used for inform user about progress during downloading and extracting of Dafny. This notification has also the following data attached: domain, current, total\newline
 
 \subsubsection{Request Server $\longrightarrow$ Client}
-There are no requests which are sent from the server. 
-
-
-\subsubsection{Diagnostics Server $\longrightarrow$ Client}
-
-\textbf{sendDiagnostics}
-After a file has been verified, the output is analyzed and errors are sent as diagnostics to the client. They contain also the message or even related locations, where the errors is coming from.  \newline
+There are no requests which are sent from the server to the client. 
 
 \subsubsection{Notification Client $\longrightarrow$ Server}
 
@@ -729,10 +725,11 @@ First stops the running instance and then removes the current Dafny installation
 \textbf{dotgraph}
 Generates a flowgraph for the file sent. Returns as the generation has been completed. \newline
 
+
 \subsection{Commands}
 Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. The server can also send commands. This was needed for example, to show references, because there was a transform necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. 
 
-\subsubsection{Commands Server}
+\subsubsection{Commands Server $\longrightarrow$ Client}
 \textbf{dafny.showReferences}
 Used by CodeLens to show references of methods. The method transforms the arguments and forward them to the \textbf{editor.action.showReferences} command. 
 
@@ -759,8 +756,7 @@ This is used to show references from CodeLenses. Unfortunately the command edito
 Mainly used for all refactoring to change text in the active text document. \newline
 
 \textbf{dafny.compile}
-\todo{add mac shortcut correctly}
-Shortcut: ctrl+shift+b or %⇧⌘B 
+Shortcut: ctrl+shift+b or shift+apple+b
 \newline
 Compile the current document \newline
 
@@ -769,25 +765,28 @@ Shortcut: F5
 \newline
 Compile the current document, and if there is a "Main Method", start the corresponding executable. \newline
 
+\textbf{dafny.showDotGraph}
+Shortcut: F6
+\newline
+Generates a flow graph out of the current file. Displays all the graphs in a second view. \newline
+
 \textbf{dafny.showCounterExample}
 Shortcut: F7
 \newline
 Calculates the counter example for the current file. \newline
-
 
 \textbf{dafny.hideCounterExample}
 Shortcut: F8
 \newline
 Hide the counter example in the current file.  \newline
 
-\textbf{dafny.showDotGraph}
-Shortcut: F6
-\newline
-Generates a flow graph out of the current file. Displays all the graphs in a second view. \newline
-
 
 \subsection{Process overview}
+The following graphs should help to understand how the main processes are run through.
+In the beginning the client always connects to the language server (left out in the last picture). As soon as this connection is established different events are registered on both sides. The next step is that the client sends the configuration, which is the entry point to start the verification if Dafny is installed. Afterwards it start to differ depending on the case. 
+
 \subsubsection{Startup process}
+If Dafny is installed, the version is queried, to perform afterwards a version check on GitHub. If the latest version in installed, the DafnyServer is started and the client informed. After the client received the "Ready" additional listeners are registered, like save, document change and close. All the events which now can trigger a verification of the current document. If a verification should be performed the language server sends the request towards the DafnyServer. The output is analysed and the sent back to the client. The server status is sent on each of these steps as well.    
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyStartupFull}
@@ -796,6 +795,7 @@ Generates a flow graph out of the current file. Displays all the graphs in a sec
 \end{figure}
 
 \subsubsection{Not installed}
+If Dafny is not installed, the user is informed that Dafny can not be started and if it should be installed. It either fails if the DafnyServer can not be started or the verb version is not implemented. If the answer is yes, the flow will continue in the next graphic on install()
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyNotInstalled}
@@ -804,6 +804,7 @@ Generates a flow graph out of the current file. Displays all the graphs in a sec
 \end{figure}
 
 \subsubsection{Installation - Upgrade available}
+After the version of Dafny is known and the comparison with the release information of GitHub shows, that there is a newer release available. In that case the DafnyServer is started normally, but the user is also informed that there is a newer version. If the answer is yes, the installation starts. The first step is to stop the DafnyServer, if it is active, to perform after that an uninstallation regardless if Dafny was installed. Afterwards depending of the platform, the correct release is downloaded from GitHub. During that step, progress notifications are sent to the client (not visible in the graphic). As soon as the download is finished the archive is extracted again with progress information. The last step is to do start over and do the verification again. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyVersionUpgrade}
