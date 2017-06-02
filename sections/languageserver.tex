@@ -1,46 +1,33 @@
 \section{Language Server Protocol}\label{langserver}
-
 Visual Studio Code plugins can be implemented in two ways: the first one is via the standard Visual Studio Code API and the second one is in form of a language server. Language servers follow a standard protocol to provide services for working with different programming languages and offer often used features such as go to definition. While this offers great portability and easy integration with other IDEs or tools that work with language servers, the implementation as a language server was at first rejected in this project. \newline
 The main reason was that the project extends an existing plugin, which was already built around the standard Visual Studio Code API. A second consideration was that the usage of language servers in Visual Studio Code plugins is very sparse at the moment. The big language integrations like typescript or javascript do not implement their plugins as language servers, while the GoLang plugin offers experimental support at this time. The not wide spread usage in this environment was therefore another reason to not implement a language server initially. \newline
 However, during the process of implementing the project, many features were faster done than initially estimated, and other planned features were proven to not be feasible for the scope of this work. This meant that more time could be spend on features or ideas that were labeled as optional in the beginning. Since the concept of a language server itself is intriguing due to the potential to widen the user base considerably, it was decided to try to restructure the plugin as a language server. \newline
 The restructuring only took about 30 hours since the plugin was already nicely programmed in regard to separation of concerns, such that only a wrapper had to be written that implements the language server protocol and redirects the requests to the components that implement the core functionality. 
-Since the plugin now is programmed in form of a language server, it can potentially easily be used in other IDEs such as Eclipse or Emacs once they fully implement the language server protocol on their side. In hindsight is thought that the change of the original decision and the additional work that had to be done was well worth regarding the resulting outcome. \newline
-
+Since the plugin now is programmed in form of a language server, it can potentially easily be used in other IDEs such as Eclipse or Emacs once they fully implement the language server protocol on their side. In hindsight it is thought that the change of the original decision and the additional work that had to be done was well worth regarding the resulting outcome. \newline
 Below a short overview of the protocol and how it was implemented is given. Server here refers to the language server and not the DafnyServer. The later one is explicitly written as DafnyServer.
 
 \subsection{The protocol}
 The Language Server protocol is used between a tool (the client) and a language smartness provider (the server) to integrate features like auto complete, goto definition, find all references and alike into the tool. \cite{langserver} \newline
-
 The language server maintains semantic information about a program implemented in a particular language. The language server is notified whenever the user opens a document in the tool. Also edits by the user are reported, so the language server is notified of the changes and can update the program's semantic information. Currently, only point to point communication is supported by the protocol. Sharing one language server between multiple tools would require further protocol mechanisms like locking a file.\newline
 One of the most basic features is the analysis of the document and generation of errors and warnings (called diagnostics by Microsoft), which the tool then can display. Furthermore, more sophisticated features are also provided. For instance, the client can send a definition request for a symbol to the server. The server is then tasked to answer with the URI of the file and the range in that file where the definition can be found. The tool is then free to open said file or simply provide a peek at it through an overlay. \newline
-
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/langServerOverview}
 	\caption{Example of the communication between the client and the server}
 	\label{fig:langserveroverview}
 \end{figure}
-
-
 The server also gets notified when the user closes a file. An important distinction to make is that whenever the client has opened a file, it resides in memory and the tool maintains it. When it is closed, it simply lies in the file system like any other file. \newline
-The communication between the tool and the language server uses JSON RPC v2.0. Language server can implement an arbitrary subset of features defined in the protocol, so in the first response by the server it details what capabilities it has. \newline
-
-
+The communication between the tool and the language server uses JSON RPC v2.0. Language servers can implement an arbitrary subset of features defined in the protocol, so in the first response by the server it details what capabilities it has. \newline
 \subsection{Communication Types}
 There are two different types to communicate between the client and the server. It's either a notification or a request. 
-
 \paragraph{Notification}
 A notification is just a message which can be sent in both directions. But one can't wait for an answer. These types of messages are mostly used to inform the partner that something happened. 
-
 \paragraph{Request}
 A request on the other side is a message which will be answered.  
-
 \subsection{Standard Implementation}
-Next to custom commands, which are explained in chapter \ref{custom commands} and following, the language server describes a standardized API\cite{protMaster} for features that are useful when working with a language server. The API is designed as a Request / Reply Protocol. Below a list of the implemented Requests is listed, while a detailed description on how the implementation was done can be found in \ref{architecture}. All the structures detailed in this chapter are defined by the protocol. \newline
-
+Next to custom commands, which are explained in chapter \ref{custom commands} and following, the language server describes a standardized API \cite{protMaster} for features that are useful when working with a language server. The API is designed as a Request / Reply Protocol. Below a list of the implemented Requests is listed, while a detailed description on how the implementation was done can be found in \ref{architecture}. All the structures detailed in this chapter are defined by the protocol. \newline
 \paragraph{Message Structure}
 The protocol describes how the messages exchanged between the client and the server must be structured. A generic example of a request and a response are as follows:
-
 \textbf{Request}
 \begin{lstlisting}[language=json,firstnumber=1]
 interface RequestMessage extends Message {
@@ -61,7 +48,6 @@ interface RequestMessage extends Message {
   params?: any
 }
 \end{lstlisting}
-
 \textbf{Response}
 \begin{lstlisting}[language=json,firstnumber=1]
 interface ResponseMessage extends Message {
@@ -118,7 +104,6 @@ export namespace ErrorCodes {
 \end{lstlisting}
 \paragraph{Data structures}
 Next, an overview over the most commonly used data structures used in the protocol is given: \newline
-
 \textbf{Position}
 Describes a position, e.g. of a cursor, in a document.
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -134,7 +119,6 @@ interface Position {
   character: number;
 }
 \end{lstlisting}
-
 \textbf{Range}
 Describes an area in a document which can span multiple lines of text.
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -150,7 +134,6 @@ interface Range {
   end: Position;
 }
 \end{lstlisting}
-
 \textbf{Location}
 Describes a location inside a resource, such as a line inside a text file.
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -159,7 +142,6 @@ interface Location {
   range: Range;
 }
 \end{lstlisting}
-
 \textbf{Diagnostic}
 Describes a diagnostic such as an error or a compiler warning.
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -192,7 +174,6 @@ interface Diagnostic {
   message: string;
 }
 \end{lstlisting}
-
 \textbf{Server capabilities}
 With this data structure, the server can tell the client which features it implements. 
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -275,34 +256,30 @@ interface ServerCapabilities {
 
 \paragraph{Implemented Requests}
 Next, pairs of Request / Responses implemented by this project are listed:
-
 \textbf{Shutdown Request}
-
 The shutdown request is sent from the client to the server. It asks the server to shut down, but to not exit (otherwise the response might not be delivered correctly to the client). There is a separate exit notification that asks the server to exit.
 
-Request:
+\textbf{Request}
 \begin{lstlisting}[language=json,firstnumber=1]
   method: 'shutdown'
   params: void
 \end{lstlisting}
-Response:
+\textbf{Response}
 \begin{lstlisting}[language=json,firstnumber=1]
 result: null
 error: code and message set in case an exception happens during shutdown request.
 \end{lstlisting}
 
 \textbf{Exit Notification}
-
 A notification to ask the server to exit its process. The server should exit with success code 0 if the shutdown request has been received before; otherwise with error code 1.
 
-Notification:
+\textbf{Notification}
 \begin{lstlisting}[language=json,firstnumber=1]
 method: 'exit'
 params: void
 \end{lstlisting}
 
 \textbf{ShowMessage Notification}
-
 The show message notification is sent from a server to a client to ask the client to display a particular message in the user interface.
 
 Notification:
@@ -322,7 +299,6 @@ interface ShowMessageParams {
 }
 \end{lstlisting}
 \textbf{ShowMessage Request}
-
 The show message request is sent from a server to a client to ask the client to display a particular message in the user interface. In addition to the show message notification the request allows to pass actions and to wait for an answer from the client.
 
 Request:
@@ -472,9 +448,9 @@ interface CompletionList {
 }
 \end{lstlisting}
 
-\textbf{Goto Definition Request}
+\textbf{Go to Definition Request}
 
-The goto definition request is sent from the client to the server to resolve the definition location of a symbol at a given text document position.
+The go to definition request is sent from the client to the server to resolve the definition location of a symbol at a given text document position.
 
 Request:
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -657,9 +633,9 @@ Registration Options: TextDocumentRegistrationOptions
 
 
 \subsection{Custom Extensions}\label{custom commands}
-The following chapters will explain in detail, which additions were made, comparing to the standard messages of the language server protocol. This additions were implemented either with requests or notifications. The standard allows to send these type of messages, with a name and a payload.
+The following chapters will explain in detail which additions were made, comparing to the standard messages of the language server protocol. This additions were implemented either with requests or notifications. The standard allows to send these type of messages, with a name and a payload.
 They were needed to have features like installing Dafny, restarting the DafnyServer or updating the queue size. All features which are not normal IDE features. 
-Therefore to support a new IDE all the \textbf{Server $\longrightarrow$ Client} have to be implemented and handled, in the new client.
+Therefore to support a new IDE all the \textbf{Server $\longrightarrow$ Client} have to be implemented and handled in the new client.
 
 \subsubsection{Notification Server $\longrightarrow$ Client}
 
@@ -682,10 +658,10 @@ This message updates the queue size number in the status bar on the right side. 
 This message contains two additional parameters, which are also important for the status bar. They are the PID and the version of the started DafnyServer instance. It is sent after the dependencies have been checked and the DafnyServer have been spawned. \newline
 
 \textbf{activeVerifiyingDocument}
-As soon as a verification is sent to the DafnyServer, the client is informed to show that, if the user has this file open. \newline
+As soon as a verification is sent to the DafnyServer, the client is informed to show if the user has this file open. \newline
 
 \textbf{verificationResult}
-All verification results are sent to the server, for fast access times. Switching from one file to the other, updates the verification result on the left side based on these results. \newline
+All verification results are sent to the server, for fast access times. Switching from one file to the other updates the verification result on the left side based on these results. \newline
 
 \textbf{changeServerStatus}
 All states from the server are also sent to the client to update the status bar. \newline
@@ -694,7 +670,7 @@ All states from the server are also sent to the client to update the status bar.
 This message is sent directly after the serverStarted message to inform the DafnyClientProvider that verification requests can now be sent. \newline
 
 \textbf{progress}
-Used for inform user about progress during downloading and extracting of Dafny. This notification has also the following data attached: domain, current, total\newline
+Used to inform users about progress during downloading and extracting of Dafny. This notification has also the following data attached: domain, current, total\newline
 
 \subsubsection{Request Server $\longrightarrow$ Client}
 There are no requests which are sent from the server to the client. 
@@ -717,17 +693,17 @@ Resets the DafnyServer on the Server and restarts it. This can be useful if the 
 Sends a request containing only the Uri to the corresponding file. Starts the Dafny.exe with parameters to generate either a dll or an exe. After the compilation, it returns possible errors, if it is executable and a message.\newline
 
 \textbf{install}
-Executes first an uninstallation if Dafny is installed. Afterwards downloads Dafny, extracts it. Additionally the install folder is sent in the response to update the configuration. \newline
+Executes first an uninstallation if Dafny is installed. Afterwards downloads Dafny and extracts it. Additionally the install folder is sent in the response to update the configuration. \newline
 
 \textbf{uninstall}
 First stops the running instance and then removes the current Dafny installation. \newline
 
 \textbf{dotgraph}
-Generates a flowgraph for the file sent. Returns as the generation has been completed. \newline
+Generates a flow graph for the file sent. Returns as the generation has been completed. \newline
 
 
 \subsection{Commands}
-Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. The server can also send commands. This was needed for example, to show references, because there was a transform necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. 
+Commands are specified in the client and can trigger different actions. One can specify names for them and register shortcuts from them. The server can also send commands. This was needed for example to show references, because there was a transformation necessary, so that the arguments are the right types, before the command is executed. The method signature was not the same as in the language server protocol specification. 
 
 \subsubsection{Commands Server $\longrightarrow$ Client}
 \textbf{dafny.showReferences}
@@ -743,7 +719,7 @@ Restarts the DafnyServer with the "Reset Request".\newline
 
 \textbf{dafny.installDafny}
 This command is used to trigger the install request, either by a context menu or a shortcut. 
-First run the uninstallDafny command to be sure that there is no running instance. Afterwards downloads the latest version from GitHub. This process is either executed from an upgrade message, not installed message or can be executed manually. 
+First it runs the uninstallDafny command to be sure that there is no running instance. Afterwards downloads the latest version from GitHub. This process is either executed from an upgrade message, not installed message or can be executed manually. 
 See \nameref{fig:Version upgrade available} for a better overview over the installation process. \newline
 
 \textbf{dafny.uninstallDafny}
@@ -783,10 +759,10 @@ Hide the counter example in the current file.  \newline
 
 \subsection{Process overview}
 The following graphs should help to understand how the main processes are run through.
-In the beginning the client always connects to the language server (left out in the last picture). As soon as this connection is established different events are registered on both sides. The next step is that the client sends the configuration, which is the entry point to start the verification if Dafny is installed. Afterwards it start to differ depending on the case. 
+In the beginning, the client always connects to the language server (left out in the last picture). As soon as this connection is established, different events are registered on both sides. The next step is that the client sends the configuration, which is the entry point to start the verification if Dafny is installed. Afterwards it starts to differ depending on the case. 
 
 \subsubsection{Startup process}
-If Dafny is installed, the version is queried, to perform afterwards a version check on GitHub. If the latest version in installed, the DafnyServer is started and the client informed. After the client received the "Ready" additional listeners are registered, like save, document change and close. All the events which now can trigger a verification of the current document. If a verification should be performed the language server sends the request towards the DafnyServer. The output is analysed and the sent back to the client. The server status is sent on each of these steps as well.    
+If Dafny is installed, the version is queried, to perform afterwards a version check on GitHub. If the latest version in installed, the DafnyServer is started and the client informed. After the client received the "Ready" message, additional listeners are registered like save, document change and close. All the events which now can trigger a verification of the current document. If a verification should be performed, the language server sends the request towards the DafnyServer. The output is analyzed and the sent back to the client. The server status is sent on each of these steps as well.    
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyStartupFull}
@@ -795,7 +771,7 @@ If Dafny is installed, the version is queried, to perform afterwards a version c
 \end{figure}
 
 \subsubsection{Not installed}
-If Dafny is not installed, the user is informed that Dafny can not be started and if it should be installed. It either fails if the DafnyServer can not be started or the verb version is not implemented. If the answer is yes, the flow will continue in the next graphic on install()
+If Dafny is not installed, the user is informed that Dafny can not be started and asks if it should be installed. It either fails if the DafnyServer can not be started or the verb version is not implemented. If the answer is yes, the flow will continue in the next graphic on install()
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyNotInstalled}
@@ -804,7 +780,7 @@ If Dafny is not installed, the user is informed that Dafny can not be started an
 \end{figure}
 
 \subsubsection{Installation - Upgrade available}
-After the version of Dafny is known and the comparison with the release information of GitHub shows, that there is a newer release available. In that case the DafnyServer is started normally, but the user is also informed that there is a newer version. If the answer is yes, the installation starts. The first step is to stop the DafnyServer, if it is active, to perform after that an uninstallation regardless if Dafny was installed. Afterwards depending of the platform, the correct release is downloaded from GitHub. During that step, progress notifications are sent to the client (not visible in the graphic). As soon as the download is finished the archive is extracted again with progress information. The last step is to do start over and do the verification again. 
+After the version of Dafny is known and the comparison with the release information of GitHub shows that there is a newer release available. In that case the DafnyServer is started normally, but the user is also informed that there is a newer version. If the answer is yes, the installation starts. The first step is to stop the DafnyServer, if it is active, to perform after that an uninstallation regardless if Dafny was installed. Afterwards, depending of the platform, the correct release is downloaded from GitHub. During that step, progress notifications are sent to the client (not visible in the graphic). As soon as the download is finished the archive is extracted again with progress information. The last step is to do start over and do the verification again. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{img/DafnyVersionUpgrade}
