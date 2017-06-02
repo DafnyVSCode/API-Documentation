@@ -15,7 +15,9 @@ Below one first finds what is tested and how, followed by a table which explains
 
 \subsubsection{System Tests}
 As discussed in the last chapter, not everything can be easily tested, so the test scope has to be restricted. The following table shows which system component are tested and how.
+\rowcolors{2}{gray!25}{white}
 \begin{longtable}{ p{0.3\textwidth} | p{0.2\textwidth} | p{0.4\textwidth} }
+\rowcolor{gray!50}
 	\textbf{Topic} & \textbf{Tested} & \textbf{Description}\\
 	Installation of Dafny plugin & Manual & Manual installation of Dafny and setting of base path   \\
 	Automatic installation of Dafny & Manual & Easier to validate that base path is set correctly and all files exists \\
@@ -28,7 +30,8 @@ As discussed in the last chapter, not everything can be easily tested, so the te
 	Snippets & Manual & Check if snippets are working\\
 	File verification & Automatic & As a .dfy is opened the DafnyServer is started and the file verified \\
 	Counter Model & Automatic & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
-
+	\caption{System Tests}
+	\label{tab:System Tests}
 \end{longtable}
 
 
