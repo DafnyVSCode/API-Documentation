@@ -14,7 +14,6 @@ As discussed in the last chapter, not everything can be easily tested, so the te
 \begin{longtable}{ p{0.3\textwidth} | p{0.2\textwidth} | p{0.4\textwidth} }
 \rowcolor{gray!50}
 	\textbf{Topic} & \textbf{Tested} & \textbf{Description}\\
-<<<<<<< HEAD
 	Installation of Dafny plugin & Manually & Manual installation of Dafny and setting of base path   \\
 	Automatic installation of Dafny & Manually & Easier to validate that base path is set correctly and all files exists \\
 	Uninstallation of Dafny & Manually & Verify on file system level\\
@@ -25,28 +24,14 @@ As discussed in the last chapter, not everything can be easily tested, so the te
 	Verification on typing & Manually & Easy to test manually\\
 	Snippets & Manually & Check if snippets are working\\
 	File verification & Automatically & As a .dfy is opened the DafnyServer is started and the file verified \\
-	Counter Model & Automatically & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
-
-=======
-	Installation of Dafny plugin & Manual & Manual installation of Dafny and setting of base path   \\
-	Automatic installation of Dafny & Manual & Easier to validate that base path is set correctly and all files exists \\
-	Uninstallation of Dafny & Manual & Verify on file system level\\
-	Communication DafnyServer and Dafny plugin & Manual + Automatic & Test if output from DafnyServer is correctly parsed and displayed\\
-	Restart DafnyServer task & Manual & Check if a new PID is used and the other is stopped\\
-	Local queue & Manual & DafnyServer can be paused in Visual Studio Code and queuing can be checked \\
-	Syntax highlighting & Manual & Look on example code \\
-	Verification on typing & Manual & Easy to test manually\\
-	Snippets & Manual & Check if snippets are working\\
-	File verification & Automatic & As a .dfy is opened the DafnyServer is started and the file verified \\
 	Counter Model & Automatic & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
 	\caption{System Tests}
 	\label{tab:System Tests}
->>>>>>> 4033fc82bb374e0ca8b7eedc44e9281da89beeaa
 \end{longtable}
 
 
 \subsubsection{Basic tests}
-If the Dafny plugin is installed, the following procedure is expected inside Visual Studio Code. 
+If the Dafny plugin is installed, the following procedure is expected inside Visual Studio Code.  
 \begin{itemize}
 	\item The Dafny language is available
 	\item .dfy is associated with the Dafny plugin
