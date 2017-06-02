@@ -1,8 +1,8 @@
 \section{Dafny}
 Dafny consists out of 4 different projects. DafnyDriver, DafnyPipleline, DafnyRuntime and the DafnyServer. Most important was the DafnyServer for this project. It had been forked to allow extensions which were merged back into the master branch of Microsoft. 
 \subsection{Overview}
-Dafny itself does not verify programs, but does the translation into boogie code. Boogie does mostly the same, it can translate the code to different prove engines. Additionally it can be configured to do the verification slightly different. One of the prove engines, which was used for this project is Z3. This engine can verify if a logical formula can be proven. If a prove is found, it can also be viewed, which was important to produce counter examples, were the prove was negated. 
-Additionally the DafnyServer is part of Dafny and allows caching and the opportunity to not start a new process for each verification.\newline 
+Dafny itself does not verify programs, but does the translation into boogie code. Boogie does mostly the same, it can translate the code to different prove engines. Additionally it can be configured to do the verification slightly different. One of the prove engines, which was used for this project, is Z3. This engine can verify if a logical formula can be proven. If a prove is found, it can also be viewed, which was important to produce counter examples, were the prove was negated. 
+Additionally, the DafnyServer is part of Dafny and allows caching and the opportunity to not start a new process for each verification.\newline 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/dafny_overview}
@@ -48,9 +48,9 @@ Execution trace:
 Verification completed successfully!
 [SUCCESS] [[DAFNY-SERVER: EOM]]
 \end{lstlisting}
-The result is plain text There is currently no possibility to get a JSON response. Because of that it is needed to parsed and extract the most important parts manually. 
+The result is plain text. There is currently no possibility to get a JSON response. Because of that, it is necessary to parse and extract the most important parts manually. 
 \subsubsection{symbols}
-To support refactoring in the Dafny Visual Studio Code plugin, symbol information was needed. All fields, methods and classes inside a file along with their information about position, reference and usage have to be accessible. To support this, the DafnyServer was extended. A new verb "symbols" was introduced. This collects various information about the symbol table of the input file and returns it as JSON. 
+To support refactoring in the Dafny Visual Studio Code plugin, symbol information was needed. All fields, methods and classes inside a file along with their information about position, references and usage have to be accessible. To support this, the DafnyServer was extended. A new verb "symbols" was introduced. This collects various information about the symbol table of the input file and returns it as JSON. 
 \newline\newline
 \textbf{Request}
 \begin{lstlisting}[language=dafny]
