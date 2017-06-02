@@ -1,33 +1,28 @@
 \section{Testing}
 This section details what was tested in this project and how the testing environment was set up.
-
 \subsection{Test specification}
-
 \subsubsection{Unit Tests}
 Visual Studio Code plugins can be tested with standard javascript testing frameworks like Mocha or Jasmine, if they don't use any features of Visual Studio Code itself. This allows to test core logic without the need to run tests inside VS Code.
-
 \subsubsection{Integration Tests}
-Visual Studio Code extensions which require VS Code API can be tested with help of a special instance of Visual Studio Code. Inside this instance, the extension can use the full API and tests can execute commands like creating a new file, entering a character, using autocompletion and verifying if the extension works as expected.   
-
+Visual Studio Code extensions which require VS Code API can be tested with help of a special instance of Visual Studio Code. Inside this instance, the extension can use the full API and tests can execute commands like creating a new file, entering a character, using auto completion and verifying if the extension works as expected.   
 \subsubsection{Test overview}
 To verify that the Dafny Visual Studio Code Plugin is working as expected, it has to be properly tested. Two possibilities exist. Either automatic unit / integration tests or manual testing. The best would be to test everything automatically. Unfortunately this is not possible, since although the Visual Studio Code Test API provides a rich set of methods, there is no direct access to the file system or a possibility to wait for certain tasks to finish. For this reason some tests have to be performed manually, especially use cases which install Dafny and rely heavily on scripts. On the other side, if all automatic tests fail, it's mostly a clear signal that something with the server is not okay. So the automatic tests also verify if the DafnyServer is working correctly. During development it is also quite easy to verify certain features on the fly. 
 Below one first finds what is tested and how, followed by a table which explains how the individual use cases are tested and guides for manual testing. 
-
 \subsubsection{System Tests}
 As discussed in the last chapter, not everything can be easily tested, so the test scope has to be restricted. The following table shows which system component are tested and how.
 \begin{longtable}{ p{0.3\textwidth} | p{0.2\textwidth} | p{0.4\textwidth} }
 	\textbf{Topic} & \textbf{Tested} & \textbf{Description}\\
-	Installation of Dafny plugin & Manual & Manual installation of Dafny and setting of base path   \\
-	Automatic installation of Dafny & Manual & Easier to validate that base path is set correctly and all files exists \\
-	Uninstallation of Dafny & Manual & Verify on file system level\\
-	Communication DafnyServer and Dafny plugin & Manual + Automatic & Test if output from DafnyServer is correctly parsed and displayed\\
-	Restart DafnyServer task & Manual & Check if a new PID is used and the other is stopped\\
-	Local queue & Manual & DafnyServer can be paused in Visual Studio Code and queuing can be checked \\
-	Syntax highlighting & Manual & Look on example code \\
-	Verification on typing & Manual & Easy to test manually\\
-	Snippets & Manual & Check if snippets are working\\
-	File verification & Automatic & As a .dfy is opened the DafnyServer is started and the file verified \\
-	Counter Model & Automatic & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
+	Installation of Dafny plugin & Manually & Manual installation of Dafny and setting of base path   \\
+	Automatic installation of Dafny & Manually & Easier to validate that base path is set correctly and all files exists \\
+	Uninstallation of Dafny & Manually & Verify on file system level\\
+	Communication DafnyServer and Dafny plugin & Manually + Automatically & Test if output from DafnyServer is correctly parsed and displayed\\
+	Restart DafnyServer task & Manually & Check if a new PID is used and the other is stopped\\
+	Local queue & Manually & DafnyServer can be paused in Visual Studio Code and queuing can be checked \\
+	Syntax highlighting & Manually & Look at example code \\
+	Verification on typing & Manually & Easy to test manually\\
+	Snippets & Manually & Check if snippets are working\\
+	File verification & Automatically & As a .dfy is opened the DafnyServer is started and the file verified \\
+	Counter Model & Automatically & Verifies that the counter model is correctly sent from the DafnyServer over the server to the client \\
 
 \end{longtable}
 
@@ -80,7 +75,6 @@ The server should first start and afterwards the status should display "Verifiyi
 \textbf{\newline Expected:}
 The server should restart automatically, with a corresponding message shown inside Visual Studio Code. 
 
-
 \paragraph{Local queue}
 \textbf{\newline Steps:}
 \begin{enumerate}
@@ -93,7 +87,7 @@ The server should restart automatically, with a corresponding message shown insi
 	\item Open more files
 \end{enumerate}
 \textbf{\newline Expected:}
-The queue size should be getting bigger and bigger as new files are opened. After the breakpoint is removed and the debugger detached, the queue size should decreasing. 
+The queue size should be getting bigger and bigger as new files are opened. After the breakpoint is removed and the debugger detached, the queue size should decrease. 
 
 \paragraph{Verification on typing}
 \textbf{\newline Steps:}
@@ -115,7 +109,6 @@ After 0.7 seconds (default value) the file should be verified and the error shou
 \textbf{\newline Expected:}
 Dafny should be downloaded, extracted, started and the file verified. See UC1, UC2, UC3 Expected
 
-
 \paragraph{Uninstallation}
 \textbf{\newline Steps:}
 \begin{enumerate}
@@ -123,7 +116,6 @@ Dafny should be downloaded, extracted, started and the file verified. See UC1, U
 \end{enumerate}
 \textbf{\newline Expected:}
 Dafny should be uninstalled from the system. /home/.Dafny or \%AppData\%/Roaming/Dafny should be empty.
-
 
 \paragraph{Snippets}
 \textbf{\newline Steps:}
@@ -135,6 +127,5 @@ Dafny should be uninstalled from the system. /home/.Dafny or \%AppData\%/Roaming
 \textbf{\newline Expected:}
 The snippet should be inserted and can be edited
 
-
-\paragraph{Autocompletion for identifiers}
-Autocompletion can be tested with the Visual Studio Code Test API. For this, a file is loaded with a set of methods. Afterwards, some test check if the existing methods are considered for autocompletion. Additionally, more refactoring tests will be performed under this use case. 
+\paragraph{Auto completion for identifiers}
+Auto completion can be tested with the Visual Studio Code Test API. For this, a file is loaded with a set of methods. Afterwards, some test checks if the existing methods are considered for auto completion. Additionally, more refactoring tests will be performed under this use case. 
