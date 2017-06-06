@@ -2,7 +2,7 @@
 This section details what was tested in this project and how the testing environment was set up.
 \subsection{Test specification}
 \subsubsection{Unit Tests}
-Visual Studio Code plugins can be tested with standard Javascript testing frameworks like Mocha or Jasmine, if they don't use any features of Visual Studio Code itself. This allows to test core logic without the need to run tests inside VS Code.
+Visual Studio Code plugins can be tested with standard Javascript testing frameworks like Mocha or Jasmine, if they do not use any features of Visual Studio Code itself. This allows to test core logic without the need to run tests inside VS Code.
 \subsubsection{Integration Tests}
 Visual Studio Code extensions which require VS Code API can be tested with help of a special instance of Visual Studio Code. Inside this instance, the extension can use the full API and tests can execute commands like creating a new file, entering a character, using auto completion and verifying if the extension works as expected.   
 \subsubsection{Test overview}
@@ -131,4 +131,4 @@ Dafny should be uninstalled from the system. /home/.Dafny or \%AppData\%/Roaming
 The snippet should be inserted and can be edited
 
 \paragraph{Auto completion for identifiers}
-Auto completion can be tested with the Visual Studio Code Test API. For this, a file is loaded with a set of methods. Afterwards, some test checks if the existing methods are considered for auto completion. Additionally, more refactoring tests will be performed under this use case. 
+Auto completion can be tested with the Visual Studio Code Test API. For this, a file is loaded with a set of methods. Afterwards, some test checks if the existing methods are considered for auto completion. In addition, more refactoring tests will be performed under this use case. 
