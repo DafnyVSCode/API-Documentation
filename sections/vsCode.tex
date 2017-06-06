@@ -2,8 +2,8 @@
 
 \subsection{Visual Studio Code Plugin}
 \subsubsection{Structure}
-When a Visual Studio Code plugin is implemented as a language server, the plugin consists of two parts. The first one is an IDE-agnostic language server, which is further explained in \ref{langserver}. The second part is the actual plugin which interacts with Visual Studio Code and relies on the language server to provide functionality. \newline
-The actual plugin will further on be referenced as the client part of the plugin. The most important part of the client part is a file called package.json. It informs the IDE about the following points:
+When a Visual Studio Code plugin is implemented as a language server, the plugin consists of two parts. The first one is an IDE-agnostic language server, which is further explained in \ref{langserver}. The second part is the actual plugin, which interacts with Visual Studio Code and relies on the language server to provide functionality. \newline
+The actual plugin will further on be referred to as the client part of the plugin. The most important part of the client part is a file called package.json. It informs the IDE about the following points:
 \paragraph{Activation}
 Details for what the plugin is designed and when it is activated. Normally, plugins stay dormant until a use case is triggered for which they are needed. For this project, this is the case whenever a Dafny file is opened in Visual Studio Code.
 
@@ -17,7 +17,7 @@ Is used to configure a plugin. For this project this for instance entails the pa
 Details all the dependencies in the form of node modules that the plugin has.
 
 \paragraph{Meta information}
-Additionally, this section details meta information about the plugin such as who developed it, which version it has and so on.
+In addition, this section details meta information about the plugin such as who developed it, which version it has and so on.
 
 \subsubsection{Visual Studio Code Customization}
 Next to the above mentioned part, the client part of the plugin is needed to instantiate the server part of the plugin and relaying the requests by the IDE to the server and the responses from the server to the IDE. This is done in a few lines of code, since Visual Studio Code fully implements the language server protocol. The instantiation and relaying of messaging is therefore done by simply registering the correct components to handle the correct requests. Details on which components are registered high can be found in \ref{langserver} and \ref{architecture}.\newline

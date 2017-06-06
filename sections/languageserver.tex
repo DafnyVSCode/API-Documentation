@@ -1,7 +1,7 @@
 \section{Language Server Protocol}\label{langserver}
 Visual Studio Code plugins can be implemented in two ways: the first one is via the standard Visual Studio Code API and the second one is in form of a language server. Language servers follow a standard protocol to provide services for working with different programming languages and offer often used features such as go to definition. While this offers great portability and easy integration with other IDEs or tools that work with language servers, the implementation as a language server was at first rejected in this project. \newline
-The main reason was that the project extends an existing plugin, which was already built around the standard Visual Studio Code API. A second consideration was that the usage of language servers in Visual Studio Code plugins is very sparse at the moment. The big language integrations like typescript or javascript do not implement their plugins as language servers, while the GoLang plugin offers experimental support at this time. The not wide spread usage in this environment was therefore another reason to not implement a language server initially. \newline
-However, during the process of implementing the project, many features were faster done than initially estimated, and other planned features were proven to not be feasible for the scope of this work. This meant that more time could be spend on features or ideas that were labeled as optional in the beginning. Since the concept of a language server itself is intriguing due to the potential to widen the user base considerably, it was decided to try to restructure the plugin as a language server. \newline
+The main reason was that the project extends an existing plugin, which was already built around the standard Visual Studio Code API. A second consideration was that the usage of language servers in Visual Studio Code plugins is very sparse at the moment. The big language integrations like typescript or Javascript do not implement their plugins as language servers, while the GoLang plugin offers experimental support at this time. The not widely spread usage in this environment was therefore another reason to not implement a language server initially. \newline
+However, during the process of implementing the project, many features were faster done than initially estimated, and other planned features were proven not to be feasible for the scope of this work. This meant that more time could be spend on features or ideas that were labeled as optional in the beginning. Since the concept of a language server itself is intriguing due to the potential to widen the user base considerably, it was decided to try restructuring the plugin as a language server. \newline
 The restructuring only took about 30 hours since the plugin was already nicely programmed in regard to separation of concerns, such that only a wrapper had to be written that implements the language server protocol and redirects the requests to the components that implement the core functionality. 
 Since the plugin now is programmed in form of a language server, it can potentially easily be used in other IDEs such as Eclipse or Emacs once they fully implement the language server protocol on their side. In hindsight it is thought that the change of the original decision and the additional work that had to be done was well worth regarding the resulting outcome. \newline
 Below a short overview of the protocol and how it was implemented is given. Server here refers to the language server and not the DafnyServer. The later one is explicitly written as DafnyServer.
@@ -21,9 +21,9 @@ The communication between the tool and the language server uses JSON RPC v2.0. L
 \subsection{Communication Types}
 There are two different types to communicate between the client and the server. It's either a notification or a request. 
 \paragraph{Notification}
-A notification is just a message which can be sent in both directions. But one can't wait for an answer. These types of messages are mostly used to inform the partner that something happened. 
+A notification is just a message which can be sent in both directions. But one cannot wait for an answer. These types of messages are mostly used to inform the partner that something happened. 
 \paragraph{Request}
-A request on the other side is a message which will be answered.  
+A request on the other hand is a message which will be answered.  
 \subsection{Standard Implementation}
 Next to custom commands, which are explained in chapter \ref{custom commands} and following, the language server describes a standardized API \cite{protMaster} for features that are useful when working with a language server. The API is designed as a Request / Reply Protocol. Below a list of the implemented Requests is listed, while a detailed description on how the implementation was done can be found in \ref{architecture}. All the structures detailed in this chapter are defined by the protocol. \newline
 \paragraph{Message Structure}
@@ -257,7 +257,7 @@ interface ServerCapabilities {
 \paragraph{Implemented Requests}
 Next, pairs of Request / Responses implemented by this project are listed:
 \textbf{Shutdown Request}
-The shutdown request is sent from the client to the server. It asks the server to shut down, but to not exit (otherwise the response might not be delivered correctly to the client). There is a separate exit notification that asks the server to exit.
+The shutdown request is sent from the client to the server. It asks the server to shut down, but not to exit (otherwise the response might not be delivered correctly to the client). There is a separate exit notification that asks the server to exit.
 
 \textbf{Request}
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -649,13 +649,13 @@ This message is sent if the mono path is specified but mono is in the path. \new
 Info messages appear quite often to inform the user about the current progress. \newline
 
 \textbf{dafnymissing}
-This informs the client that the verification of the DafnyServer has failed or that there is a newer version available. The text is sent as a additional parameter.  \newline
+This informs the client that the verification of the DafnyServer has failed or that there is a newer version available. The text is sent as an additional parameter.  \newline
 
 \textbf{queueSize}
 This message updates the queue size number in the status bar on the right side. \newline
 
 \textbf{serverStarted}
-This message contains two additional parameters, which are also important for the status bar. They are the PID and the version of the started DafnyServer instance. It is sent after the dependencies have been checked and the DafnyServer have been spawned. \newline
+This message contains two additional parameters, which are also important for the status bar. They are the PID and the version of the started DafnyServer instance. It is sent after the dependencies have been checked and the DafnyServer has been spawned. \newline
 
 \textbf{activeVerifiyingDocument}
 As soon as a verification is sent to the DafnyServer, the client is informed to show if the user has this file open. \newline
@@ -693,7 +693,7 @@ Resets the DafnyServer on the Server and restarts it. This can be useful if the 
 Sends a request containing only the Uri to the corresponding file. Starts the Dafny.exe with parameters to generate either a dll or an exe. After the compilation, it returns possible errors, if it is executable and a message.\newline
 
 \textbf{install}
-Executes first an uninstallation if Dafny is installed. Afterwards downloads Dafny and extracts it. Additionally the install folder is sent in the response to update the configuration. \newline
+Executes first an uninstallation if Dafny is installed. Afterwards downloads Dafny and extracts it. In Addition, the install folder is sent in the response to update the configuration. \newline
 
 \textbf{uninstall}
 First stops the running instance and then removes the current Dafny installation. \newline
@@ -719,7 +719,7 @@ Restarts the DafnyServer with the "Reset Request".\newline
 
 \textbf{dafny.installDafny}
 This command is used to trigger the install request, either by a context menu or a shortcut. 
-First it runs the uninstallDafny command to be sure that there is no running instance. Afterwards downloads the latest version from GitHub. This process is either executed from an upgrade message, not installed message or can be executed manually. 
+First it runs the uninstallDafny command to be sure that there is no running instance. Afterwards, it downloads the latest version from GitHub. This process is either executed from an upgrade message, not installed message or can be executed manually. 
 See \nameref{fig:Version upgrade available} for a better overview over the installation process. \newline
 
 \textbf{dafny.uninstallDafny}
